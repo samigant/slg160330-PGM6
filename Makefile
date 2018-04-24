@@ -1,5 +1,5 @@
 # Samantha Gant
-# slg160330
+# slg160330@utdallas.edu
 # CS3377.502
 # Prog 6 Makefile
 
@@ -14,6 +14,7 @@ LDLIBS = -lcdk -lcurses
 all : program6.exe
 
 clean : 
+	rm -f $(OBJS) *~ \#~
 
 backup : clean
 	@mkdir -p ~/backups; chmod 700 ~/backups
