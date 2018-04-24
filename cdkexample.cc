@@ -1,3 +1,8 @@
+// Saamntha Gant
+// slg160330@utdallas.edu
+// CS3377.502
+// Prog 6 CDK Example File (Modified)
+
 /*
  * Usage of CDK Matrix
  *
@@ -6,17 +11,37 @@
  * Email:  stephen.perkins@utdallas.edu
  */
 
+#include <string.h>
 #include <iostream>
+#include <fstream>
 #include "cdk.h"
+#include <sstream>
+#include <stdint.h>
+#include <algorithm>
 
-
-#define MATRIX_WIDTH 4
-#define MATRIX_HEIGHT 3
-#define BOX_WIDTH 15
-#define MATRIX_NAME_STRING "Test Matrix"
+#define MATRIX_WIDTH 3
+#define MATRIX_HEIGHT 5
+#define BOX_WIDTH 25
+#define MATRIX_NAME_STRING "Binary File Contents"
 
 using namespace std;
 
+class BinaryFileHeader{
+public:
+
+  uint32_t magicNumber;
+  uint32_t versionNumber;
+  uint64_t numRecords;
+};
+
+const int maxRecordStringLength = 25;
+
+class BinaryFileRecord{
+public:
+
+  uint8_t strLength;
+  char stringBuffer[maxRecordStringLength];
+};
 
 int main()
 {
@@ -33,9 +58,9 @@ int main()
   // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
   // above.
 
-  const char 		*rowTitles[] = {"R0", "R1", "R2", "R3", "R4", "R5"};
-  const char 		*columnTitles[] = {"C0", "C1", "C2", "C3", "C4", "C5"};
-  int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
+  const char 		*rowTitles[] = {"", "a", "b", "c", "d", "e"};
+  const char 		*columnTitles[] = {"", "a", "b", "c"};
+  int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
   int		boxTypes[] = {vMIXED, vMIXED, vMIXED, vMIXED,  vMIXED,  vMIXED};
 
   /*
@@ -65,11 +90,31 @@ int main()
   /* Display the Matrix */
   drawCDKMatrix(myMatrix, true);
 
+  // Opening binary file to fill matrix and creater objects for reading
+  BinaryFileHeader *header = new BinaryFileHeader();
+  BinaryFileRecord *record = new BinaryFileRecord();
+
+  ifstream binfile("cs3377.bin", ios::in | ios::binary);
+  
+  // Reading binary file header and placing in matrix
+  binfile.read((char *) header, sizeof(BinaryFileHeader));
+  std::stringstream ss;
+  ss << "Magic: 0x" << std::uppercase << std::hex << header->magicNumber;
+  setCDKMatrixCell(myMatrix, 1, 1,ss.str().c_str());
+  std::stringstream sss;
+  sss << "Version: " << header->versionNumber;
+  setCDKMatrixCell(myMatrix, 1, 2, sss.str().c_str());
+  std::stringstream ssss;
+  ssss << "NumRecords: " << header->numRecords;
+  setCDKMatrixCell(myMatrix, 1, 3, ssss.str().c_str());
   /*
-   * Dipslay a message
+   * Display a message
    */
   setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
   drawCDKMatrix(myMatrix, true);    /* required  */
+
+  // Closing binary file
+  binfile.close();
 
   /* So we can see results, pause until a key is pressed. */
   unsigned char x;
