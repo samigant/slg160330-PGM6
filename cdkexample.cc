@@ -1,4 +1,4 @@
-// Saamntha Gant
+// Samantha Gant
 // slg160330@utdallas.edu
 // CS3377.502
 // Prog 6 CDK Example File (Modified)
@@ -107,10 +107,30 @@ int main()
   std::stringstream ssss;
   ssss << "NumRecords: " << header->numRecords;
   setCDKMatrixCell(myMatrix, 1, 3, ssss.str().c_str());
+  
+  // Reading binary file records to place in matrix
+  binfile.read((char *) record, sizeof(BinaryFileRecord));
+  std::stringstream sssss;
+  sssss << "strlen: ";
+  std::stringstream r;
+  int a = 2;
+  int length = record->strLength;
+  while(length != 0){
+    r << sssss.str() << length;
+    setCDKMatrixCell(myMatrix, a, 1, r.str().c_str());
+    setCDKMatrixCell(myMatrix, a, 2, record->stringBuffer);
+    r.str("");
+    a++;
+    if(a < 6){
+      binfile.read((char *) record, sizeof(BinaryFileRecord));
+      length = record->strLength;
+    }
+    else
+      length = 0;
+  }
   /*
    * Display a message
    */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   // Closing binary file
