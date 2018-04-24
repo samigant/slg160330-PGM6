@@ -28,7 +28,7 @@ backup : clean
 	@echo
 	@echo Backup Complete
 
-program6.exe : $(OBJS)
+program6.exe : $(OBJS) cs3377.bin
 	$(CXX) $(OBJS) $(CXXFLAGS) -o program6.exe $(LDFLAGS) $(LDLIBS)
 
 cdkexample.o : cdkexample.cc
